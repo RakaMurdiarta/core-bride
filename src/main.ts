@@ -1,20 +1,22 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { EnvService } from './config/env/env.service';
-import { WinstonLogger } from './logger/winston/winston.logger';
+import NestjsLoggerServiceAdapter from './logger/logger.adapter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
 
   const configService = app.get(EnvService);
 
-  const logger = new WinstonLogger(configService);
+  app.useLogger(app.get(NestjsLoggerServiceAdapter));
 
   await app.listen(
     configService.get('PORT') ?? 3000,
     configService.get('HOST'),
   );
 
-  logger.info(`This application is runnning on: ${await app.getUrl()}`);
+  // logger.debug(`This application is runnning on: ${await app.getUrl()}`);
 }
 bootstrap();

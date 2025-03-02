@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EmployeeModule } from './employee/employee.module';
 import { envSchema } from './config/env/env.schema';
 import { EnvModule } from './config/env/env.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { EnvModule } from './config/env/env.module';
     }),
     EmployeeModule,
     EnvModule,
+    LoggerModule,
   ],
   controllers: [],
   providers: [],

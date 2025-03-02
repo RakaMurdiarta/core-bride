@@ -22,6 +22,10 @@ export const envSchema = z.object({
       message:
         'LOG_LEVEL must be one of the following: error, debug, info, warn',
     }),
+  APP: z.string().optional().default('core-bride'),
+  CONTEXT: z.string().optional().default('logger Ctx'),
+  ORGANIZATION: z.string().optional().default('Personal'),
+  slackWebhookUrl: z.string().optional().default('url'),
 });
 
 export type Env = z.infer<typeof envSchema>;
