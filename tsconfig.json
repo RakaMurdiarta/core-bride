@@ -24,6 +24,9 @@
       "@config/*": [
         "libs/commons/src/config/*"
       ],
+      "@entities/*": [
+        "libs/commons/src/entities/*"
+      ],
       "@env/*": [
         "libs/commons/src/config/env/*"
       ],
