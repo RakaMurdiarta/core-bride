@@ -18,11 +18,27 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-        "@root/*": ["src/*"],
-        "@config/*": ["src/config/*"],
-        "@env/*": ["src/config/env/*"],
-        "@logger/*": ["src/logger/*"],
-        "@validator/*": ["src/validator/*"],
-      }
+      "@root/*": [
+        "src/*"
+      ],
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@env/*": [
+        "src/config/env/*"
+      ],
+      "@logger/*": [
+        "src/logger/*"
+      ],
+      "@validator/*": [
+        "src/validator/*"
+      ],
+      "@app/commons": [
+        "libs/commons/src"
+      ],
+      "@app/commons/*": [
+        "libs/commons/src/*"
+      ]
+    }
   }
 }
