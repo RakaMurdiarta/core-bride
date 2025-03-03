@@ -34,7 +34,7 @@
         "libs/commons/src/logger/*"
       ],
       "@validator/*": [
-        "libs/commons/src/validator/*"
+        "libs/commons/src/pipes/*"
       ],
       "@app/commons": [
         "libs/commons/src"

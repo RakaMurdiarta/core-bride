@@ -1,4 +1,4 @@
 /**
  * @description export all entity here
  */
-export * from '@root/project/project.entity';
+export * from '@root/projects/project.entity';
