@@ -2,12 +2,6 @@ import { DataSource, EntityManager, Repository } from 'typeorm';
 import { ENTITY_MANAGER_KEY } from '@interceptors/db-transaction.interceptor';
 import { Request } from 'express';
 
-declare module 'express' {
-  interface Request {
-    ENTITY_MANAGER?: EntityManager;
-  }
-}
-
 export class BaseRepository<T> {
   constructor(
     private dataSource: DataSource,

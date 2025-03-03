@@ -1,17 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateProjectCommand } from './create-project.command';
 import { ProjectEntity } from '../project.entity';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { BaseRepository } from '../../../libs/commons/src/repository/base-repo';
 import { Request } from 'express';
-
-declare module 'express' {
-  interface Request {
-    ENTITY_MANAGER?: EntityManager;
-  }
-}
 
 @Injectable({ scope: Scope.REQUEST })
 @CommandHandler(CreateProjectCommand)
