@@ -32,6 +32,7 @@ export const envSchema = z.object({
   DB_PORT: z.coerce.number().optional().default(5432),
   DB_PASSWORD: z.string().optional().default('admin'),
   DB_HOST: z.string().optional().default('127.0.0.1'),
+  DB_URL: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

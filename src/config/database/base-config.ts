@@ -9,5 +9,6 @@ export default function dbBaseConfig(env: EnvService): TypeOrmModuleOptions {
     username: env.get('DB_USER'),
     password: env.get('DB_PASSWORD'),
     logging: process.env.NODE_ENV !== 'production' ? true : false,
+    url: env.get('DB_URL'),
   };
 }

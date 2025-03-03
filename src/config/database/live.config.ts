@@ -4,10 +4,12 @@ import { EnvService } from '../env/env.service';
 
 export function dbLiveConfig(env: EnvService): TypeOrmModuleOptions {
   const config = {
-    type: 'postgres',
     ...dbBaseConfig(env),
+    type: 'postgres',
     synchronize: false,
-  };
+    dropSchema: false,
+    poolSize: 10,
+  } as TypeOrmModuleOptions;
 
   return config as TypeOrmModuleOptions;
 }
