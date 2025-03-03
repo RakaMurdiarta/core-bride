@@ -8,6 +8,8 @@ import { EnvService } from '@env/env.service';
 import { DataSource } from 'typeorm';
 import { CommonsModule } from '@app/commons';
 import { EmployeeModule } from './employee/employee.module';
+import { ProjectModule } from './projects/project.module';
+import { CqrsModule } from '@nestjs/cqrs';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,8 +21,10 @@ import { EmployeeModule } from './employee/employee.module';
         abortEarly: true,
       },
     }),
+    CqrsModule.forRoot(),
     CommonsModule,
     EmployeeModule,
+    ProjectModule,
     TypeOrmModule.forRootAsync({
       useFactory: (env: EnvService) => {
         return {

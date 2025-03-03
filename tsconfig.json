@@ -30,6 +30,9 @@
       "@env/*": [
         "libs/commons/src/config/env/*"
       ],
+      "@interceptors/*": [
+        "libs/commons/src/interceptors/*"
+      ],
       "@logger/*": [
         "libs/commons/src/logger/*"
       ],
