@@ -60,7 +60,7 @@ export default class ConsoleTransport {
   private static mapLogLevelColor(level: LogLevel): LogColors {
     switch (level) {
       case LogLevel.Debug:
-        return LogColors.blue;
+        return LogColors.pink;
       case LogLevel.Info:
         return LogColors.green;
       case LogLevel.Warn:
@@ -72,7 +72,7 @@ export default class ConsoleTransport {
       case LogLevel.Emergency:
         return LogColors.pink;
       default:
-        return LogColors.cyan;
+        return LogColors.blue;
     }
   }
 }

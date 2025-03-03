@@ -26,6 +26,12 @@ export const envSchema = z.object({
   CONTEXT: z.string().optional().default('logger Ctx'),
   ORGANIZATION: z.string().optional().default('Personal'),
   slackWebhookUrl: z.string().optional().default('url'),
+  //Database
+  DB_NAME: z.string().optional().default('local'),
+  DB_USER: z.string().optional().default('admin'),
+  DB_PORT: z.coerce.number().optional().default(5432),
+  DB_PASSWORD: z.string().optional().default('admin'),
+  DB_HOST: z.string().optional().default('127.0.0.1'),
 });
 
 export type Env = z.infer<typeof envSchema>;

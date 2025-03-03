@@ -19,6 +19,10 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
         "@root/*": ["src/*"],
+        "@config/*": ["src/config/*"],
+        "@env/*": ["src/config/env/*"],
+        "@logger/*": ["src/logger/*"],
+        "@validator/*": ["src/validator/*"],
       }
   }
 }
