@@ -1,13 +1,13 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { EmployeeModule } from './employee/employee.module';
 import { envSchema } from '@env/env.schema';
 import { EnvModule } from '@env/env.module';
-import { LoggerModule } from '@logger/logger.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dbLiveConfig } from '@config/database/live.config';
 import { EnvService } from '@env/env.service';
 import { DataSource } from 'typeorm';
+import { CommonsModule } from '@app/commons';
+import { EmployeeModule } from './employee/employee.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,9 +19,8 @@ import { DataSource } from 'typeorm';
         abortEarly: true,
       },
     }),
+    CommonsModule,
     EmployeeModule,
-    EnvModule,
-    LoggerModule,
     TypeOrmModule.forRootAsync({
       useFactory: (env: EnvService) => {
         return {

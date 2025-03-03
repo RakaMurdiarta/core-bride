@@ -2,7 +2,7 @@ import { Injectable, LoggerService, Scope } from '@nestjs/common';
 import * as path from 'path';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
-import { EnvService } from '../../config/env/env.service';
+import { EnvService } from '@env/env.service';
 import { customLevels } from './winston.conf';
 
 @Injectable({ scope: Scope.TRANSIENT })

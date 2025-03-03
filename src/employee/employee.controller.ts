@@ -1,5 +1,5 @@
 import { Controller, Get, Inject } from '@nestjs/common';
-import Logger, { LoggerKey } from '../logger/domain/logger';
+import Logger, { LoggerKey } from '@logger/domain/logger';
 
 @Controller('employee')
 export class EmployeeController {

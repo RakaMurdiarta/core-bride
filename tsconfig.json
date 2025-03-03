@@ -22,16 +22,16 @@
         "src/*"
       ],
       "@config/*": [
-        "src/config/*"
+        "libs/commons/src/config/*"
       ],
       "@env/*": [
-        "src/config/env/*"
+        "libs/commons/src/config/env/*"
       ],
       "@logger/*": [
-        "src/logger/*"
+        "libs/commons/src/logger/*"
       ],
       "@validator/*": [
-        "src/validator/*"
+        "libs/commons/src/validator/*"
       ],
       "@app/commons": [
         "libs/commons/src"

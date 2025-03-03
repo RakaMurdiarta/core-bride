@@ -1,8 +1,8 @@
-import { EnvService } from '@root/config/env/env.service';
+import { EnvService } from '@env/env.service';
 import * as winston from 'winston';
 import * as path from 'path';
 import 'winston-daily-rotate-file';
-import { LogLevel } from '@root/logger/domain/log';
+import { LogLevel } from '@app/commons/logger/domain/log';
 
 export default class FileTransport {
   public static create(env: EnvService) {

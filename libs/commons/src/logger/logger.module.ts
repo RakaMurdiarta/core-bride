@@ -11,9 +11,9 @@ import WinstonLoggerCustom, {
   WinstonLoggerTransportsKey,
 } from './winston/winston-custom.logger';
 import * as morgan from 'morgan';
-import { EnvService } from '../config/env/env.service';
-import ConsoleTransport from './winston/transports/console.transport';
-import { EnvModule } from '../config/env/env.module';
+import { EnvService } from '@env/env.service';
+import ConsoleTransport from '@logger/winston/transports/console.transport';
+import { EnvModule } from '@env/env.module';
 import NestjsLoggerServiceAdapter from './logger.adapter';
 import FileTransport from './winston/transports/file.transport';
 import SlackTransport from './winston/transports/slack.transport';

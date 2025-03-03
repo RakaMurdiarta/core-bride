@@ -1,6 +1,6 @@
 import * as winston from 'winston';
-import { LogData, LogLevel } from '@root/logger/domain/log';
-import { EnvService } from '../../../config/env/env.service';
+import { LogData, LogLevel } from '@app/commons/logger/domain/log';
+import { EnvService } from '@env/env.service';
 
 enum LogColors {
   red = '\x1b[31m',
