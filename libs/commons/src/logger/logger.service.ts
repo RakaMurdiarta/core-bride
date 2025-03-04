@@ -64,8 +64,6 @@ export class LoggerService implements Logger {
       context: data?.context || this.context,
       app: data?.app || this.app,
       sourceClass: data?.sourceClass || this.sourceClass,
-      // correlationId:
-      //   data?.correlationId || this.contextStorageService.getContextId(),
     };
   }
 
