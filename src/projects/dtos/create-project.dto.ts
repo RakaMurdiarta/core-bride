@@ -1,5 +1,8 @@
 export class CreateProjectDto {
   name: string;
   status: string;
-  type: string;
+  propertyType: string;
+  companyId: string;
+  number: string;
+  projectId: number;
 }

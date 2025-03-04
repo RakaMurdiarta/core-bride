@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -32,4 +33,9 @@ export abstract class BaseSchemaUUID extends BaseTimestamp {
   _assignId() {
     this.id = UUID_v7();
   }
+}
+
+export abstract class BaseSchemaSerial extends BaseTimestamp {
+  @PrimaryGeneratedColumn()
+  id: number;
 }

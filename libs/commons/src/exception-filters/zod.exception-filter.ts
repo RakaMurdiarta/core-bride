@@ -1,5 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { ZodError } from 'zod';
+import { ApiResponse } from '../api/base-response';
 
 @Catch(ZodError)
 export class ZodFilter<T extends ZodError> implements ExceptionFilter {
@@ -7,10 +8,15 @@ export class ZodFilter<T extends ZodError> implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const status = 400;
-    response.status(status).json({
-      errors: exception.errors,
-      message: exception.message,
+
+    const __response: ApiResponse<any> = {
+      data: null,
+      message: exception.errors[0].message,
+      metaData: {
+        timestamp: new Date().toISOString(),
+      },
       statusCode: status,
-    });
+    };
+    response.status(status).json(__response);
   }
 }

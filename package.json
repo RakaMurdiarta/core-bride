@@ -26,6 +26,7 @@
     "@nestjs/cqrs": "^11.0.2",
     "@nestjs/platform-express": "^10.4.15",
     "@nestjs/typeorm": "^11.0.0",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "morgan": "^1.10.0",
