@@ -3,6 +3,7 @@ import { BaseSchemaUUID } from '@app/commons/entities/base/entity.abstract';
 
 @Entity({ name: ProjectEntity.tableName })
 @Unique('uq_project_name', ['name'])
+@Unique('uq_project_project_id', ['projectId'])
 export class ProjectEntity extends BaseSchemaUUID {
   static tableName = 'projects';
 

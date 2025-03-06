@@ -12,6 +12,7 @@ import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import Logger, { LoggerKey } from '@logger/domain/logger';
 import { CreateProjectCommand } from '../commands/create-project.command';
+import { UpdateProjectCommand } from '../commands/update-project.command';
 
 @Injectable({ scope: Scope.REQUEST })
 export class ProjectRepository extends BaseRepository<ProjectEntity> {
@@ -46,5 +47,36 @@ export class ProjectRepository extends BaseRepository<ProjectEntity> {
     });
 
     return projectSave;
+  }
+
+  async update(cmd: UpdateProjectCommand, project: ProjectEntity) {
+    this.logger.debug('update project progress', {
+      props: {
+        ...cmd,
+      },
+    });
+
+    Object.keys(cmd).forEach((key) => {
+      if (key === 'projectId') {
+        return;
+      }
+
+      if (cmd[key] !== undefined && cmd[key] !== null) {
+        project[key] = cmd[key];
+      }
+    });
+
+    await this.repo.save(project).catch((error) => {
+      this.logger.error(error.message, {
+        error: error.message,
+        props: {
+          location: `${ProjectRepository.name} method : update`,
+        },
+      });
+
+      throw new UnprocessableEntityException('Failed to update project');
+    });
+
+    return project;
   }
 }
