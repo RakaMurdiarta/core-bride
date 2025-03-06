@@ -11,7 +11,7 @@ export class ZodFilter<T extends ZodError> implements ExceptionFilter {
 
     const __response: ApiResponse<any> = {
       data: null,
-      message: exception.errors[0].message,
+      message: `property ${exception.errors[0].path[0]}, ${exception.errors[0].message}`,
       metaData: {
         timestamp: new Date().toISOString(),
       },

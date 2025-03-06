@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { IProjectService } from '../Iproject.service';
-import { CreateProjectDto } from '@root/projects/dtos/create-project.dto';
+import { CreateProjectDto } from '@root/projects/zod-schema/create-project.schema';
 import { CreateProjectCommand } from '@root/projects/commands/create-project.command';
 import Logger, { LoggerKey } from '@logger/domain/logger';
 import { CreateProjectResponse } from '@root/projects/dao/create-project.dao';
 import { UpdateProjectResponse } from '@root/projects/dao/update-project.dao';
-import { UpdateProjectDto } from '@root/projects/dtos/update-project.dto';
-import { UpdateProjectCommand } from '../../commands/update-project.command';
+import { UpdateProjectDto } from '@root/projects/zod-schema/update-project.schema';
+import { UpdateProjectCommand } from '@root/projects/commands/update-project.command';
 
 @Injectable()
 export class ProjectService implements IProjectService {
@@ -27,7 +27,7 @@ export class ProjectService implements IProjectService {
       const cmd = await this.commandBus.execute(
         new CreateProjectCommand(
           arg.name,
-          arg.propertyType,
+          arg.projectType,
           arg.status,
           arg.companyId,
           arg.number,
@@ -62,7 +62,7 @@ export class ProjectService implements IProjectService {
         new UpdateProjectCommand(
           arg.projectId,
           arg.name,
-          arg.propertyType,
+          arg.projectType,
           arg.status,
           arg.companyId,
           arg.number,
