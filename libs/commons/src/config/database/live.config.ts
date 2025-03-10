@@ -13,6 +13,11 @@ export function dbLiveConfig(env: EnvService): TypeOrmModuleOptions {
     poolSize: 10,
     entities: Object.values(entities),
     logger: new QueryDbLogger(),
+    extra: {
+      max: 10,
+      connectionTimeoutMillis: 1000,
+    },
+    connectTimeoutMS: 3000,
   } as TypeOrmModuleOptions;
 
   return config as TypeOrmModuleOptions;

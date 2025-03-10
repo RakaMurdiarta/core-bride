@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { LogLevel } from '../../logger/type';
+import { LogLevel } from '@logger/type';
 
 export const envSchema = z.object({
   PORT: z.coerce.number().optional().default(8080),
@@ -33,6 +33,18 @@ export const envSchema = z.object({
   DB_PASSWORD: z.string().optional().default('admin'),
   DB_HOST: z.string().optional().default('127.0.0.1'),
   DB_URL: z.string().optional(),
+  //Database External App -- SIA
+  DB_SIA_USER: z.string(),
+  DB_SIA_HOST: z.string(),
+  DB_SIA_PWD: z.string(),
+  DB_SIA_NAME: z.string(),
+  DB_SIA_PORT: z.coerce.number(),
+  //Database External App -- QR TRACK
+  DB_QR_TRACK_USER: z.string(),
+  DB_QR_TRACK_HOST: z.string(),
+  DB_QR_TRACK_PWD: z.string(),
+  DB_QR_TRACK_NAME: z.string(),
+  DB_QR_TRACK_PORT: z.coerce.number(),
 });
 
 export type Env = z.infer<typeof envSchema>;
