@@ -1,19 +1,14 @@
-import {
-  Inject,
-  Injectable,
-  OnModuleDestroy,
-  OnModuleInit,
-} from '@nestjs/common';
-import { MODULE_OPTIONS_TOKEN } from './plain-db.module-defination';
-import { Pool, createPool, PoolOptions } from 'mysql2/promise';
+import { Inject, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import Logger, { LoggerKey } from '../logger/domain/logger';
+import { Pool, PoolOptions, createPool } from 'mysql2/promise';
+import { MODULE_OPTIONS_TOKEN } from './plain-db.module-defination';
 
-@Injectable()
-export class DbPlainService implements OnModuleDestroy, OnModuleInit {
+export abstract class DBPlainContractService
+  implements OnModuleInit, OnModuleDestroy
+{
   private pool: Pool;
-
   constructor(
-    @Inject(LoggerKey) private logger: Logger,
+    @Inject(LoggerKey) protected logger: Logger,
     @Inject(MODULE_OPTIONS_TOKEN) private options: PoolOptions,
   ) {}
 
@@ -45,6 +40,10 @@ export class DbPlainService implements OnModuleDestroy, OnModuleInit {
     }
   }
 
+  get connectionPool(): Pool {
+    return this.pool;
+  }
+
   private async checkConnection(): Promise<void> {
     try {
       const [rows] = await this.pool.query('SELECT 1');
@@ -54,15 +53,6 @@ export class DbPlainService implements OnModuleDestroy, OnModuleInit {
     } catch (error) {
       throw new Error('MySQL connection test failed: ' + error.message);
     }
-  }
-
-  get connectionPool(): Pool {
-    return this.pool;
-  }
-
-  async query(sql: string, values?: Array<any>) {
-    const [rows] = await this.pool.execute(sql, values);
-    return rows;
   }
 
   async onModuleDestroy() {
