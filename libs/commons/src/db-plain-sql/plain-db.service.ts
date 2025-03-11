@@ -18,17 +18,30 @@ export class DbPlainService implements OnModuleDestroy, OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this.logger.info('Initializing MySQL pool...');
+    this.logger.info(
+      `[${this.options.database}] >> Initializing MySQL pool...`,
+    );
 
     try {
       this.pool = createPool(this.options);
 
       await this.checkConnection();
 
-      this.logger.info('MySQL connection established successfully.');
+      this.logger.info(
+        `[${this.options.database}] >> MySQL connection established successfully.`,
+      );
     } catch (error) {
-      this.logger.error('Failed to connect to MySQL:', error.message);
-      throw new Error('MySQL connection initialization failed');
+      this.logger.error(
+        `[${this.options.database}] >> Failed to connect to MySQL: ${error.message}`,
+        {
+          props: {
+            errors: error,
+          },
+        },
+      );
+      throw new Error(
+        `[${this.options.database}] >> MySQL connection initialization failed`,
+      );
     }
   }
 
