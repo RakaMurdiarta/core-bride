@@ -6,4 +6,5 @@ import { UpdateProjectDto } from '@root/projects/zod-schema/update-project.schem
 export interface IProjectService {
   createProject(arg: CreateProjectDto): Promise<CreateProjectResponse>;
   updateProject(arg: UpdateProjectDto): Promise<UpdateProjectResponse>;
+  // projectDistributeDispatch(args: CreateProjectDto): Promise<void>;
 }
