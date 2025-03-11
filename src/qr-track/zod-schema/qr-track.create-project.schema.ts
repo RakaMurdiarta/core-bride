@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * @description this schema must be the same with column name represented sia database schema
+ * @description this schema must be the same with column name represented qr track database schema
  */
 export const qrTrackCreateProjectSchema = z.object({
   // ProjectID: z.number(),

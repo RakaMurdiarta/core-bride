@@ -10,8 +10,6 @@ import { CommonsModule } from '@app/commons';
 import { EmployeeModule } from './employee/employee.module';
 import { ProjectModule } from './projects/project.module';
 import { CqrsModule } from '@nestjs/cqrs';
-import { SiaModule } from './sia/sia.module';
-import { QRTrackModule } from './qr-track/qr-track.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -47,8 +45,6 @@ import { QRTrackModule } from './qr-track/qr-track.module';
       imports: [EnvModule],
       inject: [EnvService],
     }),
-    SiaModule,
-    QRTrackModule,
   ],
   controllers: [],
   providers: [],

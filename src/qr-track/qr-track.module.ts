@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DatabasePlainModule } from '@app/commons/db-plain-sql/plain-db-module';
 import { EnvService } from '@app/commons/config/env/env.service';
+import { QrTrackRepo } from './repo/qr-track.repo';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { EnvService } from '@app/commons/config/env/env.service';
       inject: [EnvService],
     }),
   ],
-  exports: [],
+  providers: [QrTrackRepo],
+  exports: [QrTrackRepo],
 })
 export class QRTrackModule {}
