@@ -1,5 +1,5 @@
 import { Command } from '@nestjs/cqrs';
-import { CreateProjectResponse } from '../dao/create-project.dao';
+import { CreateProjectResponse } from '@root/projects/dao/create-project.dao';
 
 export class CreateProjectCommand extends Command<CreateProjectResponse> {
   constructor(
