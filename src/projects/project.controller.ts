@@ -7,7 +7,6 @@ import {
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
-import { ProjectService } from './services/Impl/project.service';
 import { TransactionInterceptor } from '@app/commons/interceptors/db-transaction.interceptor';
 import { ResponseApiInterceptor } from '@app/commons/interceptors/response-api.interceptor';
 import { ApiResponse } from '@app/commons/api/base-response';
@@ -24,6 +23,7 @@ import {
   UpdateProjectDto,
   updateProjectSchema,
 } from './zod-schema/update-project.schema';
+import { ProjectService } from './services/Impl/project.service';
 
 @Controller('project')
 @UseInterceptors(ResponseApiInterceptor)

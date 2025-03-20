@@ -16,8 +16,7 @@ export class ZodPipe implements PipeTransform {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   transform(value: any, metadata: ArgumentMetadata) {
     try {
-      this.schema.parse(value);
-      return value;
+      return this.schema.parse(value);
     } catch (error) {
       this.logger.debug(error.message);
       throw error;

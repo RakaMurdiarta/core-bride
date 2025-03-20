@@ -33,12 +33,14 @@ export class QrTrackRepo extends DBPlainContractService {
       const columns = Object.keys(qrTrackCreateProjectSchema.shape).filter(
         (key) => key in payload,
       );
-
+      const values: Array<any> = [];
       const parameterized = columns.map(() => '?').join(', ');
 
       const sql = `${this.insertStatment} ${this.projectTable}(${columns.join(', ')}) VALUES (${parameterized})`;
 
-      const values = columns.map((column) => payload[column] || null);
+      columns.forEach((column) => {
+        values.push(payload[column] || null);
+      });
 
       await poolConnection.execute(sql, values);
     } catch (error) {

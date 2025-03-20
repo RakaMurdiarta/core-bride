@@ -33,11 +33,18 @@ export class SiaRepo extends DBPlainContractService {
         (key) => key in payload,
       );
 
+      const values: Array<any> = [];
       const parameterized = columns.map(() => '?').join(', ');
 
       const sql = `${this.insertStatment} ${this.projectTable}(${columns.join(', ')}) VALUES (${parameterized})`;
 
-      const values = columns.map((column) => payload[column] || null);
+      columns.forEach((column) => {
+        if (payload[column] === '') {
+          values.push(payload[column] || '');
+        } else {
+          values.push(payload[column] || null);
+        }
+      });
 
       await poolConnection.execute(sql, values);
     } catch (error) {
