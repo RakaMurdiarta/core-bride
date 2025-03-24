@@ -8,9 +8,18 @@ import { SiaModule } from '../sia/sia.module';
 import { QRTrackModule } from '../qr-track/qr-track.module';
 import { ProjectsDispatcher } from './shared/distibute-project-dispatch.service';
 import { ProjectCreatedEventHandler } from './events/project-create-event.handler';
+import { RedisBullQueueModule } from '@app/commons/queue/redis-bull/redis-bull.module';
+import { DistributedProjectQueue } from './jobs/distributed-project.token';
+import { DistributedProjectProcessor } from './jobs/distributed-project.processor';
 
 @Module({
-  imports: [SiaModule, QRTrackModule],
+  imports: [
+    SiaModule,
+    QRTrackModule,
+    RedisBullQueueModule.register({
+      queues: [DistributedProjectQueue],
+    }),
+  ],
   providers: [
     CreateProjectHandler,
     UpdateProjectHandler,
@@ -18,6 +27,7 @@ import { ProjectCreatedEventHandler } from './events/project-create-event.handle
     ProjectRepository,
     ProjectsDispatcher,
     ProjectCreatedEventHandler,
+    DistributedProjectProcessor,
   ],
   exports: [
     CreateProjectHandler,

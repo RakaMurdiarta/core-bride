@@ -14,7 +14,9 @@ import Logger, { LoggerKey } from '@logger/domain/logger';
 import { CreateProjectCommand } from '../commands/create-project.command';
 import { UpdateProjectCommand } from '../commands/update-project.command';
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable({
+  scope: Scope.REQUEST,
+})
 export class ProjectRepository extends BaseRepository<ProjectEntity> {
   constructor(
     dataSource: DataSource,

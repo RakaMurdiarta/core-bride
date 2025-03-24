@@ -8,7 +8,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { TransactionInterceptor } from '@app/commons/interceptors/db-transaction.interceptor';
-import { ResponseApiInterceptor } from '@app/commons/interceptors/response-api.interceptor';
+// import { ResponseApiInterceptor } from '@app/commons/interceptors/response-api.interceptor';
 import { ApiResponse } from '@app/commons/api/base-response';
 import { CreateProjectResponse } from './dao/create-project.dao';
 import { ResponseMessage } from '@app/commons/decorators/response-message.decorator';
@@ -26,7 +26,7 @@ import {
 import { ProjectService } from './services/Impl/project.service';
 
 @Controller('projects')
-@UseInterceptors(ResponseApiInterceptor)
+// @UseInterceptors(ResponseApiInterceptor)
 export class ProjectController {
   constructor(
     private projectService: ProjectService,

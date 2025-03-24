@@ -1,11 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateProjectCommand } from './create-project.command';
-import { ConflictException, Inject } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import Logger, { LoggerKey } from '@logger/domain/logger';
 import { CreateProjectResponse } from '../dao/create-project.dao';
 import { ProjectRepository } from '../repo/project.repository';
 
 @CommandHandler(CreateProjectCommand)
+@Injectable()
 export class CreateProjectHandler
   implements ICommandHandler<CreateProjectCommand>
 {

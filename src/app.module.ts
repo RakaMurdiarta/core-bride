@@ -11,6 +11,9 @@ import { EmployeeModule } from './employee/employee.module';
 import { ProjectModule } from './projects/project.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RedisModule } from '@app/commons/infra/redis/redis.module';
+import { BullModuleConfig } from '@app/commons/queue/redis-bull/redis-bull.conf';
+import { ResponseApiInterceptor } from '../libs/commons/src/interceptors/response-api.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -23,6 +26,7 @@ import { RedisModule } from '@app/commons/infra/redis/redis.module';
       },
     }),
     RedisModule,
+    BullModuleConfig,
     CqrsModule.forRoot(),
     CommonsModule,
     EmployeeModule,
@@ -49,6 +53,11 @@ import { RedisModule } from '@app/commons/infra/redis/redis.module';
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseApiInterceptor,
+    },
+  ],
 })
 export class AppModule {}

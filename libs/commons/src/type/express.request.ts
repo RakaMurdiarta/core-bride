@@ -1,4 +1,4 @@
-import { type EntityManager } from 'typeorm';
+import { EntityManager } from 'typeorm';
 
 declare module 'express' {
   interface Request {
