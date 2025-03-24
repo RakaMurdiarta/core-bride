@@ -25,7 +25,7 @@ import {
 } from './zod-schema/update-project.schema';
 import { ProjectService } from './services/Impl/project.service';
 
-@Controller('project')
+@Controller('projects')
 @UseInterceptors(ResponseApiInterceptor)
 export class ProjectController {
   constructor(

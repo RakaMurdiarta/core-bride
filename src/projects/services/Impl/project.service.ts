@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { IProjectService } from '../Iproject.service';
 import { CreateProjectDto } from '@root/projects/zod-schema/create-project.schema';
 import { CreateProjectCommand } from '@root/projects/commands/create-project.command';
@@ -8,11 +8,13 @@ import { CreateProjectResponse } from '@root/projects/dao/create-project.dao';
 import { UpdateProjectResponse } from '@root/projects/dao/update-project.dao';
 import { UpdateProjectDto } from '@root/projects/zod-schema/update-project.schema';
 import { UpdateProjectCommand } from '@root/projects/commands/update-project.command';
+import { ProjectCreatedEvent } from '@root/projects/events/project-create.event';
 
 @Injectable()
 export class ProjectService implements IProjectService {
   constructor(
     private readonly commandBus: CommandBus,
+    private readonly eventBus: EventBus,
     @Inject(LoggerKey) private logger: Logger,
   ) {}
 
@@ -35,6 +37,18 @@ export class ProjectService implements IProjectService {
         ),
       );
       this.logger.debug('CreateProjectCommand executed');
+
+      //call event dispatch
+      this.eventBus.publish(
+        new ProjectCreatedEvent(
+          arg.name,
+          arg.projectType,
+          arg.status,
+          arg.companyId,
+          arg.number,
+          arg.projectId,
+        ),
+      );
 
       return cmd;
     } catch (error) {

@@ -10,6 +10,7 @@ import { CommonsModule } from '@app/commons';
 import { EmployeeModule } from './employee/employee.module';
 import { ProjectModule } from './projects/project.module';
 import { CqrsModule } from '@nestjs/cqrs';
+import { RedisModule } from '@app/commons/infra/redis/redis.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,6 +22,7 @@ import { CqrsModule } from '@nestjs/cqrs';
         abortEarly: true,
       },
     }),
+    RedisModule,
     CqrsModule.forRoot(),
     CommonsModule,
     EmployeeModule,

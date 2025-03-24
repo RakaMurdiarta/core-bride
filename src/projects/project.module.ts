@@ -7,6 +7,7 @@ import { UpdateProjectHandler } from './commands/update-project.handler';
 import { SiaModule } from '../sia/sia.module';
 import { QRTrackModule } from '../qr-track/qr-track.module';
 import { ProjectsDispatcher } from './shared/distibute-project-dispatch.service';
+import { ProjectCreatedEventHandler } from './events/project-create-event.handler';
 
 @Module({
   imports: [SiaModule, QRTrackModule],
@@ -16,6 +17,7 @@ import { ProjectsDispatcher } from './shared/distibute-project-dispatch.service'
     ProjectService,
     ProjectRepository,
     ProjectsDispatcher,
+    ProjectCreatedEventHandler,
   ],
   exports: [
     CreateProjectHandler,
