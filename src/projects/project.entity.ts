@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryColumn, Unique } from 'typeorm';
 import { BaseSchemaUUID } from '@app/commons/entities/base/entity.abstract';
+import { BigIntTransformer } from '@entities/transformer/bigint.transformer';
 
 @Entity({ name: ProjectEntity.tableName })
 @Unique('uq_project_name', ['name'])
@@ -7,7 +8,11 @@ import { BaseSchemaUUID } from '@app/commons/entities/base/entity.abstract';
 export class ProjectEntity extends BaseSchemaUUID {
   static tableName = 'projects';
 
-  @PrimaryColumn({ type: 'varchar', name: 'project_id' })
+  @PrimaryColumn({
+    type: 'bigint',
+    name: 'project_id',
+    transformer: new BigIntTransformer(),
+  })
   projectId: number;
 
   @Column({ type: 'varchar', name: 'company_id' })

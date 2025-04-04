@@ -19,6 +19,8 @@ export class CreateProjectDistributeHandler
       Name: command.name,
       ProjectStatus: command.status,
       UserText4: command.projectType,
+      ProjectID: command.projectId,
+      Udf_PS: '',
     };
 
     const qrTrackProjectDto: QrTrackCreateProjectDto = {

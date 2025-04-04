@@ -13,6 +13,7 @@ import { DistributedProjectQueue } from './jobs/distributed-project.token';
 import { DistributedProjectProcessor } from './jobs/distributed-project.processor';
 import { CQRS_ASYNC_CTX_REQUEST_TOKEN } from '@app/commons/cqrs-async-ctx-request/async-ctx-request-token';
 import { AsyncCtxRequestService } from '@app/commons/cqrs-async-ctx-request/async-ctx-request.service';
+import { CreateProjectDistributeHandler } from './commands/project-dispatch.handler';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AsyncCtxRequestService } from '@app/commons/cqrs-async-ctx-request/asyn
     ProjectsDispatcher,
     ProjectCreatedEventHandler,
     DistributedProjectProcessor,
+    CreateProjectDistributeHandler,
     {
       provide: CQRS_ASYNC_CTX_REQUEST_TOKEN,
       useClass: AsyncCtxRequestService,
