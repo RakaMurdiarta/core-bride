@@ -2,7 +2,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { EnvService } from '@env/env.service';
 import Logger, { LoggerKey } from '@logger/domain/logger';
 import { QueueOptions } from 'bullmq';
-import { CommonsModule } from '../../commons.module';
+import { CommonsModule } from '@app/commons/commons.module';
 
 export const BullModuleConfig = BullModule.forRootAsync({
   imports: [CommonsModule],

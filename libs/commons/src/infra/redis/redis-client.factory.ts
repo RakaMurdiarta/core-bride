@@ -15,7 +15,7 @@ export const redisClientFactory: FactoryProvider<Redis> = {
       });
 
       redisInstance.on('connect', () => {
-        logger.info('Redis Client Successfully was create', {
+        logger.info('Redis connect Successfully', {
           sourceClass: 'REDIS CLIENT',
         });
       });

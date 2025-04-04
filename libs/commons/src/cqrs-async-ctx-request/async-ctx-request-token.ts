@@ -1,0 +1,3 @@
+export const CQRS_ASYNC_CTX_REQUEST_TOKEN = Symbol(
+  'CQRS_ASYNC_CTX_REQUEST_TOKEN',
+);

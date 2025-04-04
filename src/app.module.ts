@@ -12,7 +12,7 @@ import { ProjectModule } from './projects/project.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RedisModule } from '@app/commons/infra/redis/redis.module';
 import { BullModuleConfig } from '@app/commons/queue/redis-bull/redis-bull.conf';
-import { ResponseApiInterceptor } from '../libs/commons/src/interceptors/response-api.interceptor';
+import { ResponseApiInterceptor } from '@app/commons/interceptors/response-api.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
   imports: [

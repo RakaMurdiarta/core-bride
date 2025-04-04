@@ -11,6 +11,8 @@ import { ProjectCreatedEventHandler } from './events/project-create-event.handle
 import { RedisBullQueueModule } from '@app/commons/queue/redis-bull/redis-bull.module';
 import { DistributedProjectQueue } from './jobs/distributed-project.token';
 import { DistributedProjectProcessor } from './jobs/distributed-project.processor';
+import { CQRS_ASYNC_CTX_REQUEST_TOKEN } from '@app/commons/cqrs-async-ctx-request/async-ctx-request-token';
+import { AsyncCtxRequestService } from '@app/commons/cqrs-async-ctx-request/async-ctx-request.service';
 
 @Module({
   imports: [
@@ -28,6 +30,10 @@ import { DistributedProjectProcessor } from './jobs/distributed-project.processo
     ProjectsDispatcher,
     ProjectCreatedEventHandler,
     DistributedProjectProcessor,
+    {
+      provide: CQRS_ASYNC_CTX_REQUEST_TOKEN,
+      useClass: AsyncCtxRequestService,
+    },
   ],
   exports: [
     CreateProjectHandler,

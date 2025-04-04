@@ -23,7 +23,6 @@ export class ProjectCreatedEventHandler
   async handle(event: ProjectCreatedEvent) {
     //this will use for publish queue distribute project
     try {
-      throw new Error('HAI error');
       this.logger.debug('Event Bus is triggered', {
         props: {
           ...event,
