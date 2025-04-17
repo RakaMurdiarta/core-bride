@@ -4,6 +4,10 @@ import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import Logger, { LoggerKey } from '@logger/domain/logger';
 import { CreateProjectResponse } from '../dao/create-project.dao';
 import { ProjectRepository } from '../repo/project.repository';
+import {
+  __DbTransactionalJobServiceTOKEN,
+  DbTransactionalJobService,
+} from '@app/commons/db-transaction/job-db-transaction';
 
 @CommandHandler(CreateProjectCommand)
 @Injectable()
@@ -12,26 +16,32 @@ export class CreateProjectHandler
 {
   constructor(
     @Inject(LoggerKey) private logger: Logger,
+    @Inject(__DbTransactionalJobServiceTOKEN)
+    private __tx: DbTransactionalJobService,
     private projectRepo: ProjectRepository,
   ) {}
 
   async execute(command: CreateProjectCommand): Promise<CreateProjectResponse> {
     try {
-      const getProjectById = await this.projectRepo.findBy({
-        where: {
-          projectId: command.projectId,
-          name: command.name,
+      const res = await this.__tx.withTx<CreateProjectResponse>(
+        async (manager) => {
+          const getProjectById = await this.projectRepo.findBy({
+            where: {
+              projectId: command.projectId,
+              name: command.name,
+            },
+          });
+
+          if (getProjectById) {
+            throw new ConflictException('project already exist');
+          }
+
+          return await this.projectRepo.create(command, manager);
         },
-      });
-
-      if (getProjectById) {
-        throw new ConflictException('project already exist');
-      }
-
-      const project = await this.projectRepo.create(command);
+      );
 
       return {
-        id: project.id,
+        id: res.id,
       };
     } catch (error) {
       throw error;

@@ -7,10 +7,8 @@ import {
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
-import { TransactionInterceptor } from '@app/commons/interceptors/db-transaction.interceptor';
-// import { ResponseApiInterceptor } from '@app/commons/interceptors/response-api.interceptor';
+import { TransactionInterceptor } from '@app/commons/db-transaction/db-transaction.interceptor';
 import { ApiResponse } from '@app/commons/api/base-response';
-import { CreateProjectResponse } from './dao/create-project.dao';
 import { ResponseMessage } from '@app/commons/decorators/response-message.decorator';
 import { UpdateProjectResponse } from './dao/update-project.dao';
 import { ZodPipe } from '@app/commons/pipes/zod.pipe';
@@ -33,16 +31,15 @@ export class ProjectController {
     @Inject(LoggerKey) private logger: Logger,
   ) {}
   @UsePipes(new ZodPipe(createProjectSchema))
-  @UseInterceptors(TransactionInterceptor)
   @ResponseMessage('project created')
   @Post()
   async create(
     @Body() payload: CreateProjectDto,
-  ): Promise<ApiResponse<CreateProjectResponse>> {
-    const project = await this.projectService.createProject(payload);
+  ): Promise<ApiResponse<string>> {
+    const res = await this.projectService.createProject(payload);
 
     return {
-      data: project,
+      data: res,
     };
   }
 

@@ -1,5 +1,5 @@
 import { DataSource, EntityManager, Repository } from 'typeorm';
-import { ENTITY_MANAGER_KEY } from '@interceptors/db-transaction.interceptor';
+import { ENTITY_MANAGER_KEY } from '@app/commons/db-transaction/db-transaction.interceptor';
 import { Request } from 'express';
 import { AsyncCtxRequestService } from '../cqrs-async-ctx-request/async-ctx-request.service';
 

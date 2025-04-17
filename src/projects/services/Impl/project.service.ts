@@ -4,39 +4,54 @@ import { IProjectService } from '../Iproject.service';
 import { CreateProjectDto } from '@root/projects/zod-schema/create-project.schema';
 import { CreateProjectCommand } from '@root/projects/commands/create-project.command';
 import Logger, { LoggerKey } from '@logger/domain/logger';
-import { CreateProjectResponse } from '@root/projects/dao/create-project.dao';
 import { UpdateProjectResponse } from '@root/projects/dao/update-project.dao';
 import { UpdateProjectDto } from '@root/projects/zod-schema/update-project.schema';
 import { UpdateProjectCommand } from '@root/projects/commands/update-project.command';
 import { ProjectCreatedEvent } from '@root/projects/events/project-create.event';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
+import {
+  ProjectJobKeyName,
+  ProjectQueue,
+} from '@root/projects/jobs/project.token';
+import { v7 as uuid_v7 } from 'uuid';
 
 @Injectable()
 export class ProjectService implements IProjectService {
   constructor(
     private readonly commandBus: CommandBus,
+    @InjectQueue(ProjectQueue)
+    private readonly queue: Queue<any, any, any, CreateProjectCommand>,
     private readonly eventBus: EventBus,
     @Inject(LoggerKey) private logger: Logger,
   ) {}
 
-  async createProject(arg: CreateProjectDto): Promise<CreateProjectResponse> {
+  async createProject(arg: CreateProjectDto): Promise<string> {
     try {
-      this.logger.debug('CreateProjectCommand prepare execute', {
+      this.logger.debug('Create Project Job prepare for dispatch', {
         props: {
           ...arg,
         },
         context: ProjectService.name,
       });
-      const cmd = await this.commandBus.execute(
-        new CreateProjectCommand(
-          arg.name,
-          arg.projectType,
-          arg.status,
-          arg.companyId,
-          arg.number,
-          arg.projectId,
-        ),
+
+      const uuid = uuid_v7();
+
+      const commandPayload = new CreateProjectCommand(
+        arg.name,
+        arg.projectType,
+        arg.status,
+        arg.companyId,
+        arg.number,
+        arg.projectId,
       );
-      this.logger.debug('CreateProjectCommand executed');
+
+      await this.queue.add(ProjectJobKeyName, commandPayload, {
+        jobId: uuid,
+        attempts: 3,
+      });
+
+      this.logger.debug('Create Project Job prepare dispatched');
 
       //call event dispatch
       this.eventBus.publish(
@@ -50,7 +65,7 @@ export class ProjectService implements IProjectService {
         ),
       );
 
-      return cmd;
+      return 'Job Create Project has been Dispatched';
     } catch (error) {
       this.logger.error(`${error.message}`, {
         error: error.message,

@@ -4,7 +4,7 @@ import {
   Scope,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { FindOneOptions } from 'typeorm';
+import { EntityManager, FindOneOptions } from 'typeorm';
 import { ProjectEntity } from '../project.entity';
 import { BaseRepository } from '@app/commons/repository/base-repo';
 import { DataSource } from 'typeorm';
@@ -33,8 +33,8 @@ export class ProjectRepository extends BaseRepository<ProjectEntity> {
     return await this.repo.findOne(where);
   }
 
-  async create(cmd: CreateProjectCommand) {
-    const project = this.repo.create({ ...cmd });
+  async create(cmd: CreateProjectCommand, manager: EntityManager) {
+    const project = manager.create(ProjectEntity, { ...cmd });
 
     this.logger.debug('create project progress', {
       props: {

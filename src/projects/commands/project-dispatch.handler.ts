@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateProjectDistributeCommand } from './project-dispatcher.command';
 import { DistributedProjectResponse } from '../dao/distributed-project.dao';
-import { ProjectsDispatcher } from '../shared/distibute-project-dispatch.service';
+import { ProjectsDispatcher } from '../shared/distribute-project-dispatch.service';
 import { SiaCreateProjectDto } from '@root/sia/zod-schema/sia.create-project.schema';
 import { QrTrackCreateProjectDto } from '@root/qr-track/zod-schema/qr-track.create-project.schema';
 
