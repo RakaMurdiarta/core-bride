@@ -5,10 +5,11 @@ import { InjectQueue } from '@nestjs/bullmq';
 import {
   distributedProjectJobKeyName,
   DistributedProjectQueue,
-} from '../jobs/distributed-project.token';
+} from '../jobs/constants/distributed-project.token';
 import { Queue } from 'bullmq';
 import { v7 as uuid_v7 } from 'uuid';
 import Logger, { LoggerKey } from '@logger/domain/logger';
+import { RetryConfig } from '@app/commons/queue/redis-bull/retry.config';
 
 @EventsHandler(ProjectCreatedEvent)
 @Injectable()
@@ -35,6 +36,7 @@ export class ProjectCreatedEventHandler
       await this.queue.add(distributedProjectJobKeyName, event, {
         jobId: uuid,
         attempts: 3,
+        backoff: RetryConfig,
       });
     } catch (error) {
       this.logger.error('Event Bus is triggered Error', {

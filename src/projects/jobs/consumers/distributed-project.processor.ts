@@ -1,10 +1,10 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { DistributedProjectQueue } from './distributed-project.token';
+import { DistributedProjectQueue } from '../constants/distributed-project.token';
 import { Job } from 'bullmq';
 import { ProjectCreatedEvent } from '@root/projects/events/project-create.event';
 import { Inject, Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { CreateProjectDistributeCommand } from '../commands/project-dispatcher.command';
+import { CreateProjectDistributeCommand } from '@root/projects/commands/project-dispatcher.command';
 import Logger, { LoggerKey } from '@logger/domain/logger';
 
 @Processor(DistributedProjectQueue)

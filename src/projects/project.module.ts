@@ -9,14 +9,15 @@ import { QRTrackModule } from '../qr-track/qr-track.module';
 import { ProjectsDispatcher } from './shared/distribute-project-dispatch.service';
 import { ProjectCreatedEventHandler } from './events/project-create-event.handler';
 import { RedisBullQueueModule } from '@app/commons/queue/redis-bull/redis-bull.module';
-import { DistributedProjectQueue } from './jobs/distributed-project.token';
-import { DistributedProjectProcessor } from './jobs/distributed-project.processor';
+import { DistributedProjectQueue } from './jobs/constants/distributed-project.token';
 import { CQRS_ASYNC_CTX_REQUEST_TOKEN } from '@app/commons/cqrs-async-ctx-request/async-ctx-request-token';
 import { AsyncCtxRequestService } from '@app/commons/cqrs-async-ctx-request/async-ctx-request.service';
 import { CreateProjectDistributeHandler } from './commands/project-dispatch.handler';
-import { ProjectQueue } from './jobs/project.token';
-import { ProjectProcessor } from './jobs/project.processor';
+import { ProjectQueue } from './jobs/constants/project.token';
+import { ProjectConsumer } from './jobs/consumers/project.consumer';
 import { DBTransactionModule } from '@app/commons/db-transaction/db-transaction.module';
+import { DistributedProjectProcessor } from './jobs/consumers/distributed-project.processor';
+import { ProjectProducer } from './jobs/producers/project.producer';
 
 @Module({
   imports: [
@@ -35,7 +36,8 @@ import { DBTransactionModule } from '@app/commons/db-transaction/db-transaction.
     ProjectsDispatcher,
     ProjectCreatedEventHandler,
     DistributedProjectProcessor,
-    ProjectProcessor,
+    ProjectProducer,
+    ProjectConsumer,
     CreateProjectDistributeHandler,
     {
       provide: CQRS_ASYNC_CTX_REQUEST_TOKEN,

@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
   Inject,
   Patch,
   Post,
@@ -31,7 +33,8 @@ export class ProjectController {
     @Inject(LoggerKey) private logger: Logger,
   ) {}
   @UsePipes(new ZodPipe(createProjectSchema))
-  @ResponseMessage('project created')
+  @ResponseMessage('create project dispatch')
+  @HttpCode(HttpStatus.OK)
   @Post()
   async create(
     @Body() payload: CreateProjectDto,

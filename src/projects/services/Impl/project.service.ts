@@ -13,8 +13,9 @@ import { InjectQueue } from '@nestjs/bullmq';
 import {
   ProjectJobKeyName,
   ProjectQueue,
-} from '@root/projects/jobs/project.token';
+} from '@root/projects/jobs/constants/project.token';
 import { v7 as uuid_v7 } from 'uuid';
+import { RetryConfig } from '@app/commons/queue/redis-bull/retry.config';
 
 @Injectable()
 export class ProjectService implements IProjectService {
@@ -49,6 +50,7 @@ export class ProjectService implements IProjectService {
       await this.queue.add(ProjectJobKeyName, commandPayload, {
         jobId: uuid,
         attempts: 3,
+        backoff: RetryConfig,
       });
 
       this.logger.debug('Create Project Job prepare dispatched');
