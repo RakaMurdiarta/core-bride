@@ -26,7 +26,6 @@ import {
 import { ProjectService } from './services/Impl/project.service';
 
 @Controller('projects')
-// @UseInterceptors(ResponseApiInterceptor)
 export class ProjectController {
   constructor(
     private projectService: ProjectService,

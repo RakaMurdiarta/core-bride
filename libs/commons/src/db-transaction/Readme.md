@@ -63,6 +63,9 @@ export class MyController {
 3. If all operations are successful, the transaction will be committed.
 4. If an error occurs, the transaction will be rolled back.
 
+### Notes
+1. Dont add @UseInterceptors(TransactionInterceptor) on controller if used this
+
 ### Usage
 - **Manual transaction management** within job queues to ensure database operations are executed within the scope of a specific job.
 - Provides greater control over transaction management, particularly in the context of background jobs.

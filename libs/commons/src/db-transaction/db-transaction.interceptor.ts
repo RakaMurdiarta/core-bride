@@ -1,24 +1,18 @@
 import {
   CallHandler,
   ExecutionContext,
-  Inject,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable, catchError, concatMap, finalize } from 'rxjs';
 import { DataSource } from 'typeorm';
-import { CQRS_ASYNC_CTX_REQUEST_TOKEN } from '../cqrs-async-ctx-request/async-ctx-request-token';
-import { AsyncCtxRequestService } from '../cqrs-async-ctx-request/async-ctx-request.service';
 
 export const ENTITY_MANAGER_KEY = 'ENTITY_MANAGER';
 
 @Injectable()
 export class TransactionInterceptor implements NestInterceptor {
-  constructor(
-    private dataSource: DataSource,
-    @Inject(CQRS_ASYNC_CTX_REQUEST_TOKEN) private ctx: AsyncCtxRequestService,
-  ) {}
+  constructor(private dataSource: DataSource) {}
 
   async intercept(
     context: ExecutionContext,
@@ -30,7 +24,6 @@ export class TransactionInterceptor implements NestInterceptor {
     await queryRunner.startTransaction();
 
     req[ENTITY_MANAGER_KEY] = queryRunner.manager;
-    this.ctx.setRequestCtx(req);
 
     return next.handle().pipe(
       concatMap(async (data) => {

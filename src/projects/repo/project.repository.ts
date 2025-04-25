@@ -13,8 +13,6 @@ import { Request } from 'express';
 import Logger, { LoggerKey } from '@logger/domain/logger';
 import { CreateProjectCommand } from '../commands/create-project.command';
 import { UpdateProjectCommand } from '../commands/update-project.command';
-import { CQRS_ASYNC_CTX_REQUEST_TOKEN } from '@app/commons/cqrs-async-ctx-request/async-ctx-request-token';
-import { AsyncCtxRequestService } from '@app/commons/cqrs-async-ctx-request/async-ctx-request.service';
 
 @Injectable({
   scope: Scope.REQUEST,
@@ -24,10 +22,8 @@ export class ProjectRepository extends BaseRepository<ProjectEntity> {
     dataSource: DataSource,
     @Inject(REQUEST) commonsRequest: Request,
     @Inject(LoggerKey) private logger: Logger,
-    @Inject(CQRS_ASYNC_CTX_REQUEST_TOKEN)
-    private async_req_ctx: AsyncCtxRequestService,
   ) {
-    super(dataSource, commonsRequest, ProjectEntity, async_req_ctx);
+    super(dataSource, commonsRequest, ProjectEntity);
   }
   async findBy(where: FindOneOptions<ProjectEntity>) {
     return await this.repo.findOne(where);
