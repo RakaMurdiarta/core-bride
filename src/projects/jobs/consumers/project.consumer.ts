@@ -1,6 +1,6 @@
 import { Processor, OnWorkerEvent } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import Logger, { LoggerKey } from '@logger/domain/logger';
 import { ProjectQueue } from '../constants/project.token';
@@ -18,7 +18,6 @@ export class ProjectConsumer extends IWorkerListener {
   }
   async process(job: Job<CreateProjectCommand>): Promise<any> {
     try {
-      throw new Error('ssf');
       const arg = job.data;
 
       await this.commandBus.execute(
@@ -39,14 +38,19 @@ export class ProjectConsumer extends IWorkerListener {
           functionName: 'process',
         },
       });
-      throw error;
+      if (error instanceof HttpException) {
+        if (error.getStatus() === HttpStatus.CONFLICT) {
+          return;
+        }
+
+        throw error;
+      } else {
+        throw error;
+      }
     }
   }
   @OnWorkerEvent('failed')
   async onFailed(job: Job): Promise<void> {
-    console.log('failed');
-    console.log(job.attemptsMade);
-
     console.log(
       `Processing job ${job.id} of type ${job.name} with data ${JSON.stringify(job.data)}...`,
     );

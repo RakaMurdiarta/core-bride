@@ -30,17 +30,29 @@ export class QrTrackRepo extends DBPlainContractService {
     poolConnection: PoolConnection,
   ) {
     try {
-      const columns = Object.keys(qrTrackCreateProjectSchema.shape).filter(
-        (key) => key in payload,
-      );
+      const columns = Object.keys(qrTrackCreateProjectSchema.shape)
+        .filter((key) => key in payload)
+        .concat(['created_at', 'updated_at']);
+
       const values: Array<any> = [];
+
+      const mysqlFormattedDate = new Date()
+        .toISOString()
+        .replace('T', ' ')
+        .replace('Z', '')
+        .split('.')[0];
+
+      columns.forEach((column) => {
+        if (column === 'created_at' || column === 'updated_at') {
+          values.push(mysqlFormattedDate);
+        } else {
+          values.push(payload[column] ?? null);
+        }
+      });
+
       const parameterized = columns.map(() => '?').join(', ');
 
       const sql = `${this.insertStatment} ${this.projectTable}(${columns.join(', ')}) VALUES (${parameterized})`;
-
-      columns.forEach((column) => {
-        values.push(payload[column] || null);
-      });
 
       await poolConnection.execute(sql, values);
     } catch (error) {

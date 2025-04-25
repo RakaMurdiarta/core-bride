@@ -16,6 +16,7 @@ import {
 } from '@root/projects/jobs/constants/project.token';
 import { v7 as uuid_v7 } from 'uuid';
 import { RetryConfig } from '@app/commons/queue/redis-bull/retry.config';
+import { ProjectRepository } from '@root/projects/repo/project.repository';
 
 @Injectable()
 export class ProjectService implements IProjectService {
@@ -24,6 +25,7 @@ export class ProjectService implements IProjectService {
     @InjectQueue(ProjectQueue)
     private readonly queue: Queue<any, any, any, CreateProjectCommand>,
     private readonly eventBus: EventBus,
+    private projectRepo: ProjectRepository,
     @Inject(LoggerKey) private logger: Logger,
   ) {}
 
@@ -47,13 +49,22 @@ export class ProjectService implements IProjectService {
         arg.projectId,
       );
 
-      await this.queue.add(ProjectJobKeyName, commandPayload, {
-        jobId: uuid,
-        attempts: 3,
-        backoff: RetryConfig,
+      const getProjectById = await this.projectRepo.findBy({
+        where: {
+          projectId: arg.projectId,
+          name: arg.name,
+        },
       });
 
-      this.logger.debug('Create Project Job prepare dispatched');
+      if (!getProjectById) {
+        await this.queue.add(ProjectJobKeyName, commandPayload, {
+          jobId: uuid,
+          attempts: 3,
+          backoff: RetryConfig,
+        });
+
+        this.logger.info('job added and process ');
+      }
 
       //call event dispatch
       this.eventBus.publish(
