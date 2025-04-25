@@ -9,7 +9,7 @@ import {
   siaCreateProjectSchema,
 } from '../zod-schema/sia.create-project.schema';
 import { MODULE_OPTIONS_TOKEN } from '@app/commons/db-plain-sql/plain-db.module-defination';
-import { PoolConnection, PoolOptions } from 'mysql2/promise';
+import { PoolConnection, PoolOptions, QueryResult } from 'mysql2/promise';
 import { DBPlainContractService } from '@app/commons/db-plain-sql/plain-db.abstract';
 
 @Injectable()
@@ -61,4 +61,35 @@ export class SiaRepo extends DBPlainContractService {
       throw new UnprocessableEntityException('Failed to create project');
     }
   }
+
+  async findById(
+    payload: { projectId: number },
+    poolConnection: PoolConnection,
+  ): Promise<{ ProjectID: number } | null> {
+    try {
+      const columns = ['ProjectID'].join(',');
+      const sql = `SELECT ${columns} FROM projects WHERE ProjectID = ? AND deleted_at IS NULL`;
+
+      const row = await poolConnection.execute<SelectResult>(sql, [
+        payload.projectId,
+      ]);
+
+      let result: { ProjectID: number } | null = null;
+
+      if (row.length <= 0) {
+        return null;
+      }
+
+      row[0].forEach((e) => {
+        result = e;
+      });
+
+      return result;
+    } catch (error) {
+      this.logger.error(error.message);
+      return null;
+    }
+  }
 }
+
+type SelectResult = QueryResult & Array<{ ProjectID: number }>;

@@ -29,8 +29,25 @@ export class ProjectsDispatcher {
       await qrTrackConneciton.beginTransaction();
 
       //check project already exist or not
-      await this.siaRepo.createProject(args.sia, siaConneciton);
-      await this.qrTrackRepo.createProject(args.qr_track, qrTrackConneciton);
+      const siaProjectIdExist = await this.findProjectOnSiaModule({
+        projectId: args.sia.ProjectID,
+      });
+
+      const qrProjectExist = await this.findProjectOnQrTrackModule({
+        name: args.qr_track.name,
+      });
+
+      if (siaProjectIdExist && qrProjectExist) {
+        return;
+      }
+
+      if (!siaProjectIdExist) {
+        await this.siaRepo.createProject(args.sia, siaConneciton);
+      }
+
+      if (!qrProjectExist) {
+        await this.qrTrackRepo.createProject(args.qr_track, qrTrackConneciton);
+      }
 
       this.logger.info('DB Transaction Commit');
 
@@ -49,5 +66,21 @@ export class ProjectsDispatcher {
       siaConneciton.release();
       qrTrackConneciton.release();
     }
+  }
+
+  private async findProjectOnSiaModule(payload: {
+    projectId: number;
+  }): Promise<{
+    ProjectID: number;
+  } | null> {
+    const connection = await this.siaRepo.connectionPool.getConnection();
+    return await this.siaRepo.findById(payload, connection);
+  }
+
+  private async findProjectOnQrTrackModule(payload: { name: string }): Promise<{
+    ProjectID: number;
+  } | null> {
+    const connection = await this.qrTrackRepo.connectionPool.getConnection();
+    return await this.qrTrackRepo.findByName(payload, connection);
   }
 }

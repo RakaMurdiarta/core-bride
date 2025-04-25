@@ -17,6 +17,7 @@ import {
 import { v7 as uuid_v7 } from 'uuid';
 import { RetryConfig } from '@app/commons/queue/redis-bull/retry.config';
 import { ProjectRepository } from '@root/projects/repo/project.repository';
+import { ProjectsDispatcher } from '@root/projects/shared/distribute-project-dispatch.service';
 
 @Injectable()
 export class ProjectService implements IProjectService {
@@ -26,6 +27,7 @@ export class ProjectService implements IProjectService {
     private readonly queue: Queue<any, any, any, CreateProjectCommand>,
     private readonly eventBus: EventBus,
     private projectRepo: ProjectRepository,
+    private projectDispatcherService: ProjectsDispatcher,
     @Inject(LoggerKey) private logger: Logger,
   ) {}
 

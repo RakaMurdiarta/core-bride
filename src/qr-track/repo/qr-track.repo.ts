@@ -11,7 +11,7 @@ import {
 } from '../zod-schema/qr-track.create-project.schema';
 import { DBPlainContractService } from '@app/commons/db-plain-sql/plain-db.abstract';
 import { MODULE_OPTIONS_TOKEN } from '@app/commons/db-plain-sql/plain-db.module-defination';
-import { PoolConnection, PoolOptions } from 'mysql2/promise';
+import { PoolConnection, PoolOptions, QueryResult } from 'mysql2/promise';
 
 @Injectable()
 export class QrTrackRepo extends DBPlainContractService {
@@ -62,4 +62,35 @@ export class QrTrackRepo extends DBPlainContractService {
       throw new UnprocessableEntityException('Failed to create project');
     }
   }
+
+  async findByName(
+    payload: { name: string },
+    poolConnection: PoolConnection,
+  ): Promise<{ ProjectID: number } | null> {
+    try {
+      const columns = ['id'].join(',');
+      const sql = `SELECT ${columns} FROM projects WHERE name = ? AND deleted_at IS NULL`;
+
+      const row = await poolConnection.execute<SelectResult>(sql, [
+        payload.name,
+      ]);
+
+      let result: { ProjectID: number } | null = null;
+
+      if (row.length <= 0) {
+        return null;
+      }
+
+      row[0].forEach((e) => {
+        result = e;
+      });
+
+      return result;
+    } catch (error) {
+      this.logger.error(error.message);
+      return null;
+    }
+  }
 }
+
+type SelectResult = QueryResult & Array<{ ProjectID: number }>;
