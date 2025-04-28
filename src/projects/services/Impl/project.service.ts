@@ -1,31 +1,77 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { IProjectService } from '../Iproject.service';
 import { CreateProjectDto } from '@root/projects/zod-schema/create-project.schema';
 import { CreateProjectCommand } from '@root/projects/commands/create-project.command';
 import Logger, { LoggerKey } from '@logger/domain/logger';
-import { CreateProjectResponse } from '@root/projects/dao/create-project.dao';
 import { UpdateProjectResponse } from '@root/projects/dao/update-project.dao';
 import { UpdateProjectDto } from '@root/projects/zod-schema/update-project.schema';
 import { UpdateProjectCommand } from '@root/projects/commands/update-project.command';
+import { ProjectCreatedEvent } from '@root/projects/events/project-create.event';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
+import {
+  ProjectJobKeyName,
+  ProjectQueue,
+} from '@root/projects/jobs/constants/project.token';
+import { v7 as uuid_v7 } from 'uuid';
+import { RetryConfig } from '@app/commons/queue/redis-bull/retry.config';
+import { ProjectRepository } from '@root/projects/repo/project.repository';
+import { ProjectsDispatcher } from '@root/projects/shared/distribute-project-dispatch.service';
+import { MAX_ATTEMPTS } from '@root/projects/jobs/constants/attempts';
 
 @Injectable()
 export class ProjectService implements IProjectService {
   constructor(
     private readonly commandBus: CommandBus,
+    @InjectQueue(ProjectQueue)
+    private readonly queue: Queue<any, any, any, CreateProjectCommand>,
+    private readonly eventBus: EventBus,
+    private projectRepo: ProjectRepository,
+    private projectDispatcherService: ProjectsDispatcher,
     @Inject(LoggerKey) private logger: Logger,
   ) {}
 
-  async createProject(arg: CreateProjectDto): Promise<CreateProjectResponse> {
+  async createProject(arg: CreateProjectDto): Promise<string> {
     try {
-      this.logger.debug('CreateProjectCommand prepare execute', {
+      this.logger.debug('Create Project Job prepare for dispatch', {
         props: {
           ...arg,
         },
         context: ProjectService.name,
       });
-      const cmd = await this.commandBus.execute(
-        new CreateProjectCommand(
+
+      const uuid = uuid_v7();
+
+      const commandPayload = new CreateProjectCommand(
+        arg.name,
+        arg.projectType,
+        arg.status,
+        arg.companyId,
+        arg.number,
+        arg.projectId,
+      );
+
+      const getProjectById = await this.projectRepo.findBy({
+        where: {
+          projectId: arg.projectId,
+          name: arg.name,
+        },
+      });
+
+      if (!getProjectById) {
+        await this.queue.add(ProjectJobKeyName, commandPayload, {
+          jobId: uuid,
+          attempts: MAX_ATTEMPTS,
+          backoff: RetryConfig,
+        });
+
+        this.logger.info('job added and process ');
+      }
+
+      //call event dispatch
+      this.eventBus.publish(
+        new ProjectCreatedEvent(
           arg.name,
           arg.projectType,
           arg.status,
@@ -34,9 +80,8 @@ export class ProjectService implements IProjectService {
           arg.projectId,
         ),
       );
-      this.logger.debug('CreateProjectCommand executed');
 
-      return cmd;
+      return 'Job Create Project has been Dispatched';
     } catch (error) {
       this.logger.error(`${error.message}`, {
         error: error.message,

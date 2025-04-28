@@ -4,7 +4,7 @@ import {
   Scope,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { FindOneOptions } from 'typeorm';
+import { EntityManager, FindOneOptions } from 'typeorm';
 import { ProjectEntity } from '../project.entity';
 import { BaseRepository } from '@app/commons/repository/base-repo';
 import { DataSource } from 'typeorm';
@@ -14,21 +14,26 @@ import Logger, { LoggerKey } from '@logger/domain/logger';
 import { CreateProjectCommand } from '../commands/create-project.command';
 import { UpdateProjectCommand } from '../commands/update-project.command';
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable({
+  scope: Scope.REQUEST,
+})
 export class ProjectRepository extends BaseRepository<ProjectEntity> {
   constructor(
     dataSource: DataSource,
-    @Inject(REQUEST) req: Request,
+    @Inject(REQUEST) commonsRequest: Request,
     @Inject(LoggerKey) private logger: Logger,
   ) {
-    super(dataSource, req, ProjectEntity);
+    super(dataSource, commonsRequest, ProjectEntity);
   }
   async findBy(where: FindOneOptions<ProjectEntity>) {
     return await this.repo.findOne(where);
   }
 
-  async create(cmd: CreateProjectCommand) {
-    const project = this.repo.create({ ...cmd });
+  async create(
+    cmd: CreateProjectCommand,
+    manager: EntityManager,
+  ): Promise<ProjectEntity> {
+    const project = manager.create(ProjectEntity, { ...cmd });
 
     this.logger.debug('create project progress', {
       props: {

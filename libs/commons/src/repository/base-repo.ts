@@ -1,21 +1,27 @@
 import { DataSource, EntityManager, Repository } from 'typeorm';
-import { ENTITY_MANAGER_KEY } from '@interceptors/db-transaction.interceptor';
+import { ENTITY_MANAGER_KEY } from '@app/commons/db-transaction/db-transaction.interceptor';
 import { Request } from 'express';
 
 export class BaseRepository<T> {
+  private readonly entityManager: EntityManager;
   constructor(
     private dataSource: DataSource,
-    private request: Request,
+    private commonsRequest: Request,
     private entity: new () => T,
-  ) {}
+  ) {
+    this.entityManager = this.resolveEntityManager();
+  }
 
-  protected getRepository<T>(entityCls: new () => T): Repository<T> {
-    const entityManager: EntityManager =
-      this.request[ENTITY_MANAGER_KEY] ?? this.dataSource.manager;
-    return entityManager.getRepository(entityCls);
+  private resolveEntityManager(): EntityManager {
+    const requestInstance = this.getRequestInstance();
+    return requestInstance[ENTITY_MANAGER_KEY] ?? this.dataSource.manager;
   }
 
   protected get repo(): Repository<T> {
-    return this.getRepository(this.entity);
+    return this.entityManager.getRepository(this.entity);
+  }
+
+  private getRequestInstance(): Request {
+    return this.commonsRequest;
   }
 }

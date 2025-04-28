@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { SiaRepo } from '@root/sia/repo/sia.repo';
 import { QrTrackRepo } from '@root/qr-track/repo/qr-track.repo';
-import { SiaCreateProjectDto } from '../../sia/zod-schema/sia.create-project.schema';
-import { QrTrackCreateProjectDto } from '../../qr-track/zod-schema/qr-track.create-project.schema';
+import { SiaCreateProjectDto } from '@root/sia/zod-schema/sia.create-project.schema';
+import { QrTrackCreateProjectDto } from '@root/qr-track/zod-schema/qr-track.create-project.schema';
 import Logger, { LoggerKey } from '@app/commons/logger/domain/logger';
 
 export interface ProjectsDtoDispatcher {
@@ -28,8 +28,26 @@ export class ProjectsDispatcher {
       await siaConneciton.beginTransaction();
       await qrTrackConneciton.beginTransaction();
 
-      await this.siaRepo.createProject(args.sia, siaConneciton);
-      await this.qrTrackRepo.createProject(args.qr_track, qrTrackConneciton);
+      //check project already exist or not
+      const siaProjectIdExist = await this.findProjectOnSiaModule({
+        projectId: args.sia.ProjectID,
+      });
+
+      const qrProjectExist = await this.findProjectOnQrTrackModule({
+        name: args.qr_track.name,
+      });
+
+      if (siaProjectIdExist && qrProjectExist) {
+        return;
+      }
+
+      if (!siaProjectIdExist) {
+        await this.siaRepo.createProject(args.sia, siaConneciton);
+      }
+
+      if (!qrProjectExist) {
+        await this.qrTrackRepo.createProject(args.qr_track, qrTrackConneciton);
+      }
 
       this.logger.info('DB Transaction Commit');
 
@@ -44,11 +62,25 @@ export class ProjectsDispatcher {
 
       await siaConneciton.rollback();
       await qrTrackConneciton.rollback();
-
-      //Callback API and Create on DB to log status in cases
     } finally {
       siaConneciton.release();
       qrTrackConneciton.release();
     }
+  }
+
+  private async findProjectOnSiaModule(payload: {
+    projectId: number;
+  }): Promise<{
+    ProjectID: number;
+  } | null> {
+    const connection = await this.siaRepo.connectionPool.getConnection();
+    return await this.siaRepo.findById(payload, connection);
+  }
+
+  private async findProjectOnQrTrackModule(payload: { name: string }): Promise<{
+    ProjectID: number;
+  } | null> {
+    const connection = await this.qrTrackRepo.connectionPool.getConnection();
+    return await this.qrTrackRepo.findByName(payload, connection);
   }
 }

@@ -22,9 +22,9 @@ export const envSchema = z.object({
       message:
         'LOG_LEVEL must be one of the following: error, debug, info, warn',
     }),
-  APP: z.string().optional().default('core-bride'),
+  APP: z.string().optional().default('CORE GATEWAY'),
   CONTEXT: z.string().optional().default('logger Ctx'),
-  ORGANIZATION: z.string().optional().default('Personal'),
+  ORGANIZATION: z.string().optional().default('IPMS CORE GATEWAY'),
   slackWebhookUrl: z.string().optional().default('url'),
   //Database
   DB_NAME: z.string().optional().default('local'),
@@ -45,6 +45,10 @@ export const envSchema = z.object({
   DB_QR_TRACK_PWD: z.string(),
   DB_QR_TRACK_NAME: z.string(),
   DB_QR_TRACK_PORT: z.coerce.number(),
+
+  //REDIS
+  REDIS_PORT: z.coerce.number().optional().default(6379),
+  REDIS_HOST: z.string().optional().default('127.0.0.1'),
 });
 
 export type Env = z.infer<typeof envSchema>;

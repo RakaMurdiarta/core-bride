@@ -10,6 +10,11 @@ import { CommonsModule } from '@app/commons';
 import { EmployeeModule } from './employee/employee.module';
 import { ProjectModule } from './projects/project.module';
 import { CqrsModule } from '@nestjs/cqrs';
+import { RedisModule } from '@app/commons/infra/redis/redis.module';
+import { BullModuleConfig } from '@app/commons/queue/redis-bull/redis-bull.conf';
+import { ResponseApiInterceptor } from '@app/commons/interceptors/response-api.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { JobModule } from './jobs/job.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,10 +26,13 @@ import { CqrsModule } from '@nestjs/cqrs';
         abortEarly: true,
       },
     }),
+    RedisModule,
+    BullModuleConfig,
     CqrsModule.forRoot(),
     CommonsModule,
     EmployeeModule,
     ProjectModule,
+    JobModule,
     TypeOrmModule.forRootAsync({
       useFactory: (env: EnvService) => {
         return {
@@ -47,6 +55,11 @@ import { CqrsModule } from '@nestjs/cqrs';
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseApiInterceptor,
+    },
+  ],
 })
 export class AppModule {}
