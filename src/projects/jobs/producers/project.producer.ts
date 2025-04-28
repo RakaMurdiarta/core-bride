@@ -15,7 +15,7 @@ export class ProjectProducer extends QueueEventsHost {
   }
   @OnQueueEvent('retries-exhausted')
   onRetryExeceed(job: { jobId: string; prev?: string }) {
-    console.log('retries', job.prev, job.jobId);
+    console.log('max-retries-execute', job.prev, job.jobId);
     //should call service notify like telegram bot or slack
     // this.logger.info(`Processing job ${job.jobId}...`);
   }

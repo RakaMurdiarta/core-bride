@@ -6,6 +6,7 @@ import Logger, { LoggerKey } from '@logger/domain/logger';
 import { ProjectQueue } from '../constants/project.token';
 import { CreateProjectCommand } from '@root/projects/commands/create-project.command';
 import { IWorkerListener } from '@app/commons/queue/redis-bull/listeners/Iworker.listener';
+import { CreateJobFailedCommand } from '@root/jobs/commands/create-job-failed.command';
 
 @Processor(ProjectQueue)
 @Injectable()
@@ -51,9 +52,25 @@ export class ProjectConsumer extends IWorkerListener {
   }
   @OnWorkerEvent('failed')
   async onFailed(job: Job): Promise<void> {
-    console.log(
-      `Processing job ${job.id} of type ${job.name} with data ${JSON.stringify(job.data)}...`,
+    this.logger.info(
+      `${job.id} - ${job.name} is retry cause ${job.failedReason} with attempts : ${job.attemptsMade}`,
     );
+    if (job.attemptsMade === 3) {
+      const args = new CreateJobFailedCommand(
+        job.name,
+        job.id,
+        job.queueName,
+        JSON.stringify(job.data),
+        'CORE_PROJECT',
+        'Project',
+        'FAILED',
+        job.failedReason,
+        'PENDING',
+        false,
+      );
+      //pakai upsert aja
+      await this.commandBus.execute(args);
+    }
   }
   @OnWorkerEvent('error')
   async onError(job: Job): Promise<void> {

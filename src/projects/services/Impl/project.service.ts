@@ -18,6 +18,7 @@ import { v7 as uuid_v7 } from 'uuid';
 import { RetryConfig } from '@app/commons/queue/redis-bull/retry.config';
 import { ProjectRepository } from '@root/projects/repo/project.repository';
 import { ProjectsDispatcher } from '@root/projects/shared/distribute-project-dispatch.service';
+import { MAX_ATTEMPTS } from '@root/projects/jobs/constants/attempts';
 
 @Injectable()
 export class ProjectService implements IProjectService {
@@ -61,7 +62,7 @@ export class ProjectService implements IProjectService {
       if (!getProjectById) {
         await this.queue.add(ProjectJobKeyName, commandPayload, {
           jobId: uuid,
-          attempts: 3,
+          attempts: MAX_ATTEMPTS,
           backoff: RetryConfig,
         });
 

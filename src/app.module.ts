@@ -14,6 +14,7 @@ import { RedisModule } from '@app/commons/infra/redis/redis.module';
 import { BullModuleConfig } from '@app/commons/queue/redis-bull/redis-bull.conf';
 import { ResponseApiInterceptor } from '@app/commons/interceptors/response-api.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { JobModule } from './jobs/job.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,6 +32,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     CommonsModule,
     EmployeeModule,
     ProjectModule,
+    JobModule,
     TypeOrmModule.forRootAsync({
       useFactory: (env: EnvService) => {
         return {

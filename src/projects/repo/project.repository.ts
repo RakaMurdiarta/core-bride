@@ -29,7 +29,10 @@ export class ProjectRepository extends BaseRepository<ProjectEntity> {
     return await this.repo.findOne(where);
   }
 
-  async create(cmd: CreateProjectCommand, manager: EntityManager) {
+  async create(
+    cmd: CreateProjectCommand,
+    manager: EntityManager,
+  ): Promise<ProjectEntity> {
     const project = manager.create(ProjectEntity, { ...cmd });
 
     this.logger.debug('create project progress', {

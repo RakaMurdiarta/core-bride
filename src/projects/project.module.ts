@@ -16,6 +16,7 @@ import { ProjectConsumer } from './jobs/consumers/project.consumer';
 import { DBTransactionModule } from '@app/commons/db-transaction/db-transaction.module';
 import { DistributedProjectProcessor } from './jobs/consumers/distributed-project.processor';
 import { ProjectProducer } from './jobs/producers/project.producer';
+import { JobModule } from '../jobs/job.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ProjectProducer } from './jobs/producers/project.producer';
       queues: [DistributedProjectQueue, ProjectQueue],
     }),
     DBTransactionModule,
+    JobModule,
   ],
   providers: [
     CreateProjectHandler,

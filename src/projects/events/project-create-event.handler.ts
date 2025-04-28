@@ -10,6 +10,7 @@ import { Queue } from 'bullmq';
 import { v7 as uuid_v7 } from 'uuid';
 import Logger, { LoggerKey } from '@logger/domain/logger';
 import { RetryConfig } from '@app/commons/queue/redis-bull/retry.config';
+import { MAX_ATTEMPTS } from '../jobs/constants/attempts';
 
 @EventsHandler(ProjectCreatedEvent)
 @Injectable()
@@ -35,7 +36,7 @@ export class ProjectCreatedEventHandler
 
       await this.queue.add(distributedProjectJobKeyName, event, {
         jobId: uuid,
-        attempts: 3,
+        attempts: MAX_ATTEMPTS,
         backoff: RetryConfig,
       });
     } catch (error) {
