@@ -14,9 +14,10 @@ import { CreateProjectDistributeHandler } from './commands/project-dispatch.hand
 import { ProjectQueue } from './jobs/constants/project.token';
 import { ProjectConsumer } from './jobs/consumers/project.consumer';
 import { DBTransactionModule } from '@app/commons/db-transaction/db-transaction.module';
-import { DistributedProjectProcessor } from './jobs/consumers/distributed-project.processor';
+import { DistributedProjectConsumer } from './jobs/consumers/distributed-project.consumer';
 import { ProjectProducer } from './jobs/producers/project.producer';
 import { JobModule } from '../jobs/job.module';
+import { DistributedProjectProducer } from './jobs/producers/distributed-project.producer';
 
 @Module({
   imports: [
@@ -35,8 +36,9 @@ import { JobModule } from '../jobs/job.module';
     ProjectRepository,
     ProjectsDispatcher,
     ProjectCreatedEventHandler,
-    DistributedProjectProcessor,
+    DistributedProjectConsumer,
     ProjectProducer,
+    DistributedProjectProducer,
     ProjectConsumer,
     CreateProjectDistributeHandler,
   ],

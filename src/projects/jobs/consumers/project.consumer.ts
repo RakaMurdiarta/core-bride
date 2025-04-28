@@ -68,16 +68,12 @@ export class ProjectConsumer extends IWorkerListener {
         'PENDING',
         false,
       );
-      //pakai upsert aja
+
       await this.commandBus.execute(args);
     }
   }
   @OnWorkerEvent('error')
   async onError(job: Job): Promise<void> {
-    console.log('error');
-
-    console.log(
-      `Processing job ${job.id} of type ${job.name} with data ${JSON.stringify(job.data)}...`,
-    );
+    this.logger.error(job.failedReason);
   }
 }
